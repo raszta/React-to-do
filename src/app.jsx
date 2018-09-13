@@ -10,11 +10,10 @@ class App extends React.Component{
         }        
     }
 
-    handleChange = (e) =>{
-        let name = e.target.value;
+    handleChange = (e) =>{       
         this.setState({
-            newToDo: name
-        })        
+            newToDo: e.target.value
+        });       
     }
 
     addToDo = (e) =>{
@@ -23,41 +22,42 @@ class App extends React.Component{
             activity: this.state.newToDo
         };
         this.setState({
-            toDo: [...this.state.toDo, newDo]
+            toDo: [...this.state.toDo, newDo],
+            newToDo: ''
+        });
+    }
+
+    deleteToDo = (i) => {
+        const toDo = this.state.toDo;
+        toDo.splice(i,1);
+        this.setState({
+            toDo
         });
     }
        
     render(){
-        console.log(this.state.newToDo, this.state.toDo);
+
+        const list = this.state.toDo.map((el, i) => {
+            return <li className="list-group-item" key={el.id}>{el.activity}
+                <button className="btn btn-info ml-4 btn-sm">Done</button>
+                <button className="btn ml-4 btn-sm" onClick={() => { this.deleteToDo(i) }}><i className="fas fa-trash-alt"></i></button>  </li>
+        });
 
         return <div className="container">
             <h1 className="text-center my-5">To do Application</h1>
             <div className="input-group mb-3">
-                <input type="text" className="form-control" placeholder="Add new to do..." onChange={this.handleChange} />
+                <input type="text" className="form-control" placeholder="Add new to do..." onChange={this.handleChange} value={this.state.newToDo} />
                 <div className="input-group-append">
                     <button className="btn btn-outline-secondary" onClick={this.addToDo} id="button-addon2">Add </button>
                     </div>
             </div>            
-            <Activity toDo={this.state.toDo} />
+            <div className="mt-5 ">
+                <ul className="list-group">
+                    {list}
+                </ul>
+            </div> 
         </div>
     }
 }
-
-class Activity extends React.Component{
-    render(){
-
-        const list = this.props.toDo.map((el, i) => {
-            return <li className="list-group-item" key={el.id}>{el.activity}
-              <button className="btn-info bd-highlight">Done</button>
-              <button className="btn bd-highlight"><i className="fas fa-trash-alt"></i></button>  </li>
-        });
-        
-        return <div className="mt-5 ">
-            <ul className="list-group">
-                {list}
-            </ul>
-        </div> 
-    }
-}
-
+   
 ReactDOM.render(<App />, document.getElementById('app'));
