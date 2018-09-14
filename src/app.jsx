@@ -1,8 +1,10 @@
 import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ListItem from './listItem.jsx';
-import Loading from './loading.gif';
+import ListItem from './components/listItem.jsx';
+import Header from './components/header.jsx';
+import Loading from './images/loading.gif';
+import image from './images/wood.jpeg';
 
 class ToDoApp extends React.Component{
     constructor(props){
@@ -26,8 +28,7 @@ class ToDoApp extends React.Component{
                 this.setState({
                     toDo: activities,
                     loading: false
-                });
-         
+                });         
          });               
     }
 
@@ -70,8 +71,7 @@ class ToDoApp extends React.Component{
         });
     }
 
-    updateToDo = () => {        
-       
+    updateToDo = () => { 
         const update = this.state.toDo[this.state.editingIndex];
         const toDo = this.state.toDo;
         axios.put(`${this.apiUrl}/${update.id}`, { activity: this.state.newToDo}).then(response => {  
@@ -83,7 +83,6 @@ class ToDoApp extends React.Component{
                 editingIndex: null,
             });
         }); 
-
         this.msg("Activity successfully updated");
     }
 
@@ -115,7 +114,6 @@ class ToDoApp extends React.Component{
         this.setState({
             notification
         });
-
         setTimeout(()=>{
             this.setState({
                 notification: null
@@ -135,21 +133,17 @@ class ToDoApp extends React.Component{
             />
         });
 
-        return <div className="container">
-            <h1 className="text-center m-5 font-weight-bold">
-            To Do 
-            </h1>         
-            <div className="input-group my-3">
-                <input type="text" className="form-control" placeholder="Add new to do..." onChange={this.handleChange} value={this.state.newToDo} />
-                <div className="input-group-append">
-                    <button className="btn btn-success" onClick={this.state.editing ?  this.updateToDo : this.addToDo} id="button-addon2" disabled={this.state.newToDo.length<5 ? true :false}>
-                    {this.state.editing ? "Edit to do" : "Add to do"}
-                     </button>
-                    </div>
-            </div> 
+        return <div className="container" style={{ backgroundImage: `url(${image})` }}>
+           <Header 
+                newToDo={this.state.newToDo}
+                handleChange={this.handleChange}
+                editing={this.state.editing}
+                update={this.updateToDo}
+                add={this.addToDo}
+            />
             {
                 this.state.loading &&
-                <img src={Loading} alt="Loading gif" style={{width:'50%', height:'50%'}} />
+                <img src={Loading} alt="Loading gif" style={{width:'50%'}} />
             }
             {
                 this.state.notification &&
@@ -159,7 +153,7 @@ class ToDoApp extends React.Component{
             }             
             {
                ( !this.state.editing || this.state.loading) && 
-            <div className="mt-5 ">              
+                <div className="mt-5">              
                 <ul className="list-group">
                     {list}
                 </ul>           
