@@ -13,7 +13,8 @@ class ToDoApp extends React.Component{
             newToDo: '',
             editing: false,
             editingIndex: null,
-            notification: null        
+            notification: null,
+            done:false                
         }        
     }
 
@@ -32,7 +33,7 @@ class ToDoApp extends React.Component{
             toDo: [...this.state.toDo, newDo],
             newToDo: ''
         });
-        this.msg("To do successfully added");
+        this.msg("Activity successfully added");
     }
 
     deleteToDo = (i) => {
@@ -41,7 +42,7 @@ class ToDoApp extends React.Component{
         this.setState({
             toDo
         });
-        this.msg("To do successfully deleted");
+        this.msg("Activity successfully deleted");
     }
 
     editToDo = (i) =>{
@@ -63,18 +64,21 @@ class ToDoApp extends React.Component{
             toDo: update,
             newToDo: ''
         });
-        this.msg("To do successfully updated");
+        this.msg("Activity successfully updated");
     }
 
     removeAll = () =>{
         this.setState({
             toDo : []
         });
-        this.msg("All successfully deleted");
+        this.msg("All activities successfully deleted");
     }
 
-    removeDone = () => {
-
+    allDone = () =>{
+       this.setState({
+           done: this.state.done == true ? false : true
+       })
+       
     }
 
     msg = (notification) =>{
@@ -91,9 +95,11 @@ class ToDoApp extends React.Component{
        
     render(){
         const list = this.state.toDo.map((el, i) => {
-            return <ListItem 
-            key={el.id}
+            return <ListItem
+                ready={this.state.done}                 
+                key={el.id}
                 el={el}
+                done={this.allDone}
                 editToDo={()=>{this.editToDo(i)}}
                 deleteToDo={() => {this.deleteToDo(i)}} 
             />
@@ -115,7 +121,8 @@ class ToDoApp extends React.Component{
                 this.state.notification &&
                 <div className="alert alert-success">
                     {this.state.notification}
-                </div>}             
+                </div>
+            }             
             {
                 !this.state.editing && 
             <div className="mt-5 ">              
@@ -124,11 +131,15 @@ class ToDoApp extends React.Component{
                 </ul>           
                 <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll}>
                 Remove all
-                </button>         
+                </button>  
+                <button className="btn btn-info ml-3 btn-sm" onClick={this.allDone}>
+                 All  done
+                </button>       
                 <button className="btn btn-info m-4 btn-sm" onClick={this.removeDone}>
                 Remove done
                 </button>
-            </div> }
+            </div>
+             }
         </div>
     }
 }
