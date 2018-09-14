@@ -21,8 +21,6 @@ class ToDoApp extends React.Component{
     componentDidMount(){
         axios.get(`${this.apiUrl}/ToDoApp`).then(response => {
             const activities = response.data;
-            console.log(response);
-            
             this.setState({
                 toDo: activities
             });
@@ -35,25 +33,27 @@ class ToDoApp extends React.Component{
         });       
     }
 
-    addToDo = (e) =>{       
-            const newDo = {
-            id: this.state.toDo.length>0 ? this.state.toDo[this.state.toDo.length-1].id +1 : 1,
-            activity: this.state.newToDo
-        };
-        this.setState({
-            toDo: [...this.state.toDo, newDo],
-            newToDo: '',
-            done:false
-        });
+    addToDo = (e) =>{
+        axios.post(`${this.apiUrl}/ToDoApp`, { activity: this.state.newToDo}).then(response => {
+            const activity = response.data;
+            this.setState({
+                toDo: [...this.state.toDo, activity],
+                newToDo: '',
+                done: false
+            });
+        }); 
         this.msg("Activity successfully added");      
     }
 
     deleteToDo = (i) => {
+        const del = this.state.toDo[i];
         const toDo = this.state.toDo;
-        toDo.splice(i,1);
-        this.setState({
-            toDo
-        });
+        toDo.splice(i, 1);
+        axios.delete(`${this.apiUrl}/ToDoApp/${del.id}`).then(response => {
+            this.setState({
+                toDo: toDo
+            });
+        }); 
         this.msg("Activity successfully deleted");
     }
 
@@ -67,7 +67,7 @@ class ToDoApp extends React.Component{
     }
 
     updateToDo = () => {        
-            const update = this.state.toDo;
+        const update = this.state.toDo;
         update[this.state.editingIndex].activity = this.state.newToDo;
         
         this.setState({
@@ -80,8 +80,12 @@ class ToDoApp extends React.Component{
     }
 
     removeAll = () =>{
-            this.setState({
-            toDo : []
+        let toDo = this.state.toDo;
+        toDo.forEach(el => {
+            axios.delete(`${this.apiUrl}/ToDoApp/${el.id}`);
+        });
+        this.setState({
+            toDo: []
         });
         this.msg("All activities successfully deleted");       
     }
