@@ -2,6 +2,7 @@ import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ListItem from './listItem.jsx';
+import Loading from './loading.gif';
 
 class ToDoApp extends React.Component{
     constructor(props){
@@ -12,18 +13,21 @@ class ToDoApp extends React.Component{
             editing: false,
             editingIndex: null,
             notification: null,
-            done:false              
+            done:false,
+            loading: true             
         }    
         
-        this.apiUrl = 'https://5b9b9b5d8d1635001482ccf4.mockapi.io';
+        this.apiUrl = 'https://5b9b9b5d8d1635001482ccf4.mockapi.io/ToDoApp';
     }
 
     componentDidMount(){
-        axios.get(`${this.apiUrl}/ToDoApp`).then(response => {
+        axios.get(`${this.apiUrl}`).then(response => {
             const activities = response.data;
-            this.setState({
-                toDo: activities
-            });
+                this.setState({
+                    toDo: activities,
+                    loading: false
+                });
+         
          });               
     }
 
@@ -34,7 +38,7 @@ class ToDoApp extends React.Component{
     }
 
     addToDo = (e) =>{
-        axios.post(`${this.apiUrl}/ToDoApp`, { activity: this.state.newToDo}).then(response => {
+        axios.post(`${this.apiUrl}`, { activity: this.state.newToDo}).then(response => {
             const activity = response.data;
             this.setState({
                 toDo: [...this.state.toDo, activity],
@@ -49,7 +53,7 @@ class ToDoApp extends React.Component{
         const del = this.state.toDo[i];
         const toDo = this.state.toDo;
         toDo.splice(i, 1);
-        axios.delete(`${this.apiUrl}/ToDoApp/${del.id}`).then(response => {
+        axios.delete(`${this.apiUrl}/${del.id}`).then(response => {
             this.setState({
                 toDo: toDo
             });
@@ -67,22 +71,26 @@ class ToDoApp extends React.Component{
     }
 
     updateToDo = () => {        
-        const update = this.state.toDo;
-        update[this.state.editingIndex].activity = this.state.newToDo;
-        
-        this.setState({
-            editing: false,
-            editingIndex: null,
-            toDo: update,
-            newToDo: ''
-        });
+       
+        const update = this.state.toDo[this.state.editingIndex];
+        const toDo = this.state.toDo;
+        axios.put(`${this.apiUrl}/${update.id}`, { activity: this.state.newToDo}).then(response => {  
+            toDo[this.state.editingIndex] = response.data;
+            this.setState({
+                editing: false,
+                toDo: toDo,
+                newToDo: '',                
+                editingIndex: null,
+            });
+        }); 
+
         this.msg("Activity successfully updated");
     }
 
     removeAll = () =>{
         let toDo = this.state.toDo;
         toDo.forEach(el => {
-            axios.delete(`${this.apiUrl}/ToDoApp/${el.id}`);
+            axios.delete(`${this.apiUrl}/${el.id}`);
         });
         this.setState({
             toDo: []
@@ -140,13 +148,17 @@ class ToDoApp extends React.Component{
                     </div>
             </div> 
             {
+                this.state.loading &&
+                <img src={Loading} alt="Loading gif" style={{width:'50%', height:'50%'}} />
+            }
+            {
                 this.state.notification &&
                 <div className="alert alert-success">
                     {this.state.notification}
                 </div>
             }             
             {
-                !this.state.editing && 
+               ( !this.state.editing || this.state.loading) && 
             <div className="mt-5 ">              
                 <ul className="list-group">
                     {list}
