@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ListItem from './listItem.jsx';
@@ -6,16 +7,26 @@ class ToDoApp extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            toDo: [{ id: 1, activity: 'Learn some React'},
-            { id: 2, activity: 'Learn CSS'},
-            { id: 3, activity: 'Make love in the world!'},
-            {id:4, activity: 'Make bed'}],
+            toDo: [],
             newToDo: '',
             editing: false,
             editingIndex: null,
             notification: null,
-            done:false                
-        }        
+            done:false              
+        }    
+        
+        this.apiUrl = 'https://5b9b9b5d8d1635001482ccf4.mockapi.io';
+    }
+
+    componentDidMount(){
+        axios.get(`${this.apiUrl}/ToDoApp`).then(response => {
+            const activities = response.data;
+            console.log(response);
+            
+            this.setState({
+                toDo: activities
+            });
+         });               
     }
 
     handleChange = (e) =>{       
@@ -24,16 +35,17 @@ class ToDoApp extends React.Component{
         });       
     }
 
-    addToDo = (e) =>{
-        const newDo = {
+    addToDo = (e) =>{       
+            const newDo = {
             id: this.state.toDo.length>0 ? this.state.toDo[this.state.toDo.length-1].id +1 : 1,
             activity: this.state.newToDo
         };
         this.setState({
             toDo: [...this.state.toDo, newDo],
-            newToDo: ''
+            newToDo: '',
+            done:false
         });
-        this.msg("Activity successfully added");
+        this.msg("Activity successfully added");      
     }
 
     deleteToDo = (i) => {
@@ -55,7 +67,7 @@ class ToDoApp extends React.Component{
     }
 
     updateToDo = () => {        
-        const update = this.state.toDo;
+            const update = this.state.toDo;
         update[this.state.editingIndex].activity = this.state.newToDo;
         
         this.setState({
@@ -68,22 +80,23 @@ class ToDoApp extends React.Component{
     }
 
     removeAll = () =>{
-        this.setState({
+            this.setState({
             toDo : []
         });
-        this.msg("All activities successfully deleted");
+        this.msg("All activities successfully deleted");       
     }
 
-    allDone = () =>{
-       this.setState({
-           done: this.state.done == true ? false : true
-       })       
+    allDone = () =>{ 
+        this.setState({
+        done: this.state.done == true ? false : true
+        }); 
     }
 
     removeAllDone = () =>{
         this.state.done == true ? this.setState({
-            toDo: []
-        }) : null
+        toDo: []
+        }) : null; 
+       this.msg("All done activities successfully deleted");          
     }
 
     msg = (notification) =>{
@@ -117,11 +130,11 @@ class ToDoApp extends React.Component{
             <div className="input-group my-3">
                 <input type="text" className="form-control" placeholder="Add new to do..." onChange={this.handleChange} value={this.state.newToDo} />
                 <div className="input-group-append">
-                    <button className="btn btn-outline-secondary text-light bg-dark" onClick={this.state.editing ?  this.updateToDo : this.addToDo} id="button-addon2">
+                    <button className="btn btn-success" onClick={this.state.editing ?  this.updateToDo : this.addToDo} id="button-addon2" disabled={this.state.newToDo.length<5 ? true :false}>
                     {this.state.editing ? "Edit to do" : "Add to do"}
                      </button>
                     </div>
-            </div>  
+            </div> 
             {
                 this.state.notification &&
                 <div className="alert alert-success">
@@ -134,17 +147,17 @@ class ToDoApp extends React.Component{
                 <ul className="list-group">
                     {list}
                 </ul>           
-                <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll}>
+                <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
                 Remove all
                 </button>  
-                <button className="btn btn-info ml-3 btn-sm" onClick={this.allDone}>
+                    <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
                  All  done
                 </button>       
-                <button className="btn btn-info m-4 btn-sm" onClick={this.removeAllDone}>
+                    <button className="btn btn-warning m-4 btn-sm" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
                 Remove done
                 </button>
             </div>
-             }
+            }
         </div>
     }
 }
