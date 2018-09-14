@@ -77,8 +77,13 @@ class ToDoApp extends React.Component{
     allDone = () =>{
        this.setState({
            done: this.state.done == true ? false : true
-       })
-       
+       })       
+    }
+
+    removeAllDone = () =>{
+        this.state.done == true ? this.setState({
+            toDo: []
+        }) : null
     }
 
     msg = (notification) =>{
@@ -135,7 +140,7 @@ class ToDoApp extends React.Component{
                 <button className="btn btn-info ml-3 btn-sm" onClick={this.allDone}>
                  All  done
                 </button>       
-                <button className="btn btn-info m-4 btn-sm" onClick={this.removeDone}>
+                <button className="btn btn-info m-4 btn-sm" onClick={this.removeAllDone}>
                 Remove done
                 </button>
             </div>
