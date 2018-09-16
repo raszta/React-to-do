@@ -10,17 +10,17 @@ class ToDoApp extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            toDo: [],
-            newToDo: '',
-            editing: false,
-            editingIndex: null,
-            notification: null,            
-            loading: true             
+            toDo: [], //table for data
+            newToDo: '', //input value
+            editing: false, // state of editing item
+            editingIndex: null, //index of edited item
+            notification: null,        //content of msg function    
+            loading: true         //condition for loading gif    
         }    
         
         this.apiUrl = 'https://5b9b9b5d8d1635001482ccf4.mockapi.io/ToDoApp';
     }
-
+//downloading data from api
     componentDidMount(){
         axios.get(`${this.apiUrl}`).then(response => {
             const activities = response.data;
@@ -30,13 +30,13 @@ class ToDoApp extends React.Component{
                 });         
          });               
     }
-
+//set value from input to string which will be added to data
     handleChange = (e) =>{       
         this.setState({
             newToDo: e.target.value
         });       
     }
-
+//adding new items to data
     addToDo = (e) =>{
         axios.post(`${this.apiUrl}`, { activity: this.state.newToDo}).then(response => {
             const activity = response.data;
@@ -47,7 +47,7 @@ class ToDoApp extends React.Component{
         }); 
         this.msg("Activity successfully added");      
     }
-
+//deleting item of certain id from data
     deleteToDo = (i) => {
         const del = this.state.toDo[i];
         const toDo = this.state.toDo;
@@ -59,7 +59,7 @@ class ToDoApp extends React.Component{
         }); 
         this.msg("Activity successfully deleted");
     }
-
+//editing choosen item
     editToDo = (i) =>{
         const toDo = this.state.toDo[i];
         this.setState({
@@ -68,7 +68,7 @@ class ToDoApp extends React.Component{
             editingIndex: i
         });
     }
-
+//updating choosen item
     updateToDo = () => { 
         const update = this.state.toDo[this.state.editingIndex];
         const toDo = this.state.toDo;
@@ -83,7 +83,7 @@ class ToDoApp extends React.Component{
         }); 
         this.msg("Activity successfully updated");
     }
-
+//deleting all of items from data
     removeAll = () =>{
         let toDo = this.state.toDo;
         toDo.forEach(el => {
@@ -113,7 +113,7 @@ class ToDoApp extends React.Component{
     //         toDo
     //     });
     // }
-//to update -> don't refresh the list
+//to update -> doesn't refresh the list
     removeAllDone = () =>{
         let toDo = this.state.toDo;
         let toDo1 = [];
@@ -129,7 +129,7 @@ class ToDoApp extends React.Component{
             }                                    
         });        
     }
-
+//function for alert the operation
     msg = (notification) =>{
         this.setState({
             notification
@@ -140,7 +140,7 @@ class ToDoApp extends React.Component{
             });
         }, 2000);
     }
-
+//changing status of item ->done or no
     toDoDone = (i) => {
         const done = this.state.toDo;       
         axios.put(`${this.apiUrl}/${done[i].id}`, { done: !done[i].done }).then(response => {
@@ -161,8 +161,6 @@ class ToDoApp extends React.Component{
                 toDoDone={()=>{this.toDoDone(i)}}/>
         });
 
-        const imgStyle = { width: '50%' };
-
         return <div className="container">
             <div className="row">
                 <div className="col">
@@ -177,28 +175,29 @@ class ToDoApp extends React.Component{
             <div className="row">
                 <div className="col">
                     {
-                        this.state.loading &&
-                        <img src={Loading} alt="Loading gif" style={imgStyle} />
+                        this.state.loading && //if true show gif
+                        <img src={Loading} alt="Loading gif" className="app__img"/>
                     }
                     {
-                        this.state.notification &&
+                        this.state.notification && //if true show alert
                         <div className="alert alert-success">
                             {this.state.notification}
                         </div>
                     }             
                     {
-                        ( !this.state.editing || this.state.loading) && 
+                        ( !this.state.editing || this.state.loading) && //if editing false
                         <div className="mt-5">              
                             <ul className="list-group">
                             {list}
                         </ul>           
-                        <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
+                        <button className="btn btn-info m-4 btn-sm app__btn" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
+                        {/* //disable button if  data length <0*/}
                         Remove all
                         </button>  
                             {/* <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
                             All  done
                         </button>    */}   
-                            <button className="btn btn-warning m-4 btn-sm" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
+                            <button className="btn btn-warning m-4 btn-sm app__btn" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
                         Remove done
                         </button> 
                     </div>
