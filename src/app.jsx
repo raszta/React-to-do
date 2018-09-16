@@ -14,8 +14,7 @@ class ToDoApp extends React.Component{
             newToDo: '',
             editing: false,
             editingIndex: null,
-            notification: null,
-            done:false,
+            notification: null,            
             loading: true             
         }    
         
@@ -96,18 +95,28 @@ class ToDoApp extends React.Component{
         });
         this.msg("All activities successfully deleted");       
     }
+//To Do maybe with redux????
+    // allDone = () =>{ 
+    //     let toDo = this.state.toDo;
+       
+    //     let arr =[];      
+    //     for (var i = 0; i < toDo.length;i++){
+    //      arr.push(!toDo[i].done)
+    //     }
+    //   console.log(toDo, 'oryginal');
+    //   console.log(arr, 'po zmianie !');
+    //     toDo.forEach((el,i) => {
+    //         axios.put(`${this.apiUrl}/${el.id}`, { done: arr[i] })
+    //         .then(response=>{toDo = response});  
+    //     });  
+                                 
+    //     this.setState({
+    //         toDo
+    //     });
+    // }
 
-    allDone = () =>{ 
-        this.setState({
-        done: this.state.done == true ? false : true
-        }); 
-    }
-
-    removeAllDone = () =>{
-        this.state.done == true ? this.setState({
-        toDo: []
-        }) : null; 
-       this.msg("All done activities successfully deleted");          
+    removeAllDone = (i) =>{
+                
     }
 
     msg = (notification) =>{
@@ -120,16 +129,25 @@ class ToDoApp extends React.Component{
             });
         }, 2000);
     }
+
+    toDoDone = (i) => {
+        const done = this.state.toDo;       
+        axios.put(`${this.apiUrl}/${done[i].id}`, { done: !done[i].done }).then(response => {
+            done[i] = response.data;
+            this.setState({                
+                toDo: done                
+            });
+        }); 
+    }
        
     render(){
         const list = this.state.toDo.map((el, i) => {
-            return <ListItem
-                ready={this.state.done}                 
+            return <ListItem                         
                 key={el.id}
-                el={el}
-                done={this.allDone}
+                el={el}                
                 editToDo={()=>{this.editToDo(i)}}
                 deleteToDo={() => {this.deleteToDo(i)}} 
+                toDoDone={()=>{this.toDoDone(i)}}
             />
         });
 
@@ -139,7 +157,7 @@ class ToDoApp extends React.Component{
                 handleChange={this.handleChange}
                 editing={this.state.editing}
                 update={this.updateToDo}
-                add={this.addToDo}
+                add={this.addToDo}                
             />
             {
                 this.state.loading &&
@@ -160,12 +178,12 @@ class ToDoApp extends React.Component{
                 <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
                 Remove all
                 </button>  
-                    <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
+                    {/* <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
                  All  done
-                </button>       
+                </button>    */}   
                     <button className="btn btn-warning m-4 btn-sm" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
                 Remove done
-                </button>
+                </button> 
             </div>
             }
         </div>
