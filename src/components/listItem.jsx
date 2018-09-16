@@ -8,19 +8,30 @@ export default class ListItem extends React.Component{
         let font='';
         if (this.props.el.done ==1){
             font="red";
-        }
-        return <li className="list-group-item bg-transparent d-flex justify-content-end" 
-        style={{ display: 'flex', justifyContent: "spaceAround"}}>
-            <button className="btn btn-dark mx-3 btn-sm" onClick={this.props.deleteToDo} disabled={this.props.el.done == 1 ? true : false}>
-                <i className="fas fa-trash-alt"></i>
-            </button>
-            <button className="btn btn-warning mx-3 btn-sm" onClick ={this.props.toDoDone}>
-                Done
-            </button>
-            <button className="btn btn-info mx-3 btn-sm" onClick={this.props.editToDo} disabled={this.props.el.done == 1? true : false}>
-                Edit
-            </button>
-            <p className=" bd-highlight flex-grow-1 text-right font-weight-bold h4" style={{ color:font}}>{this.props.el.activity}</p>
+        }        
+        const pStyle = { color: font, textAlign: "right" };
+
+        return <li className="list-group-item bg-transparent">
+            <div className="row">
+                <div className="col col-md-auto">
+                    <button className="btn btn-dark  btn-sm" onClick={this.props.deleteToDo} disabled={this.props.el.done == 1 ? true : false}>
+                        <i className="fas fa-trash-alt"></i>
+                    </button>
+                 </div>
+                <div className="col col-md-auto">
+                    <button className="btn btn-warning  btn-sm" onClick ={this.props.toDoDone}>
+                        {this.props.el.done == 1 ? 'Undone' : 'Done'}
+                    </button>
+                </div>
+                <div className="col col-md-auto">
+                    <button className="btn btn-info  btn-sm" onClick={this.props.editToDo} disabled={this.props.el.done == 1? true : false}>
+                        Edit
+                    </button>
+                </div>
+                <div className="col-6 col-md-auto">
+                    <p className="flex-grow-1 font-weight-bold h5" style={pStyle}>{this.props.el.activity}</p>
+                </div>
+            </div>
         </li>
     }
 }

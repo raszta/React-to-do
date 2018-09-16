@@ -42,8 +42,7 @@ class ToDoApp extends React.Component{
             const activity = response.data;
             this.setState({
                 toDo: [...this.state.toDo, activity],
-                newToDo: '',
-                done: false
+                newToDo: ''
             });
         }); 
         this.msg("Activity successfully added");      
@@ -95,7 +94,7 @@ class ToDoApp extends React.Component{
         });
         this.msg("All activities successfully deleted");       
     }
-//To Do maybe with redux????
+//To Do doesn't refresh properly
     // allDone = () =>{ 
     //     let toDo = this.state.toDo;
        
@@ -114,9 +113,21 @@ class ToDoApp extends React.Component{
     //         toDo
     //     });
     // }
-
-    removeAllDone = (i) =>{
-                
+//to update -> don't refresh the list
+    removeAllDone = () =>{
+        let toDo = this.state.toDo;
+        let toDo1 = [];
+        toDo1 = toDo.filter(el =>el.done !==1); 
+        toDo.forEach(el => {
+            this.setState({
+                toDo: toDo1
+            });  
+            if(el.done ==1)
+            {
+                console.log(el.id, toDo.indexOf(el) );                
+                axios.delete(`${this.apiUrl}/${el.id}`);
+            }                                    
+        });        
     }
 
     msg = (notification) =>{
@@ -147,52 +158,60 @@ class ToDoApp extends React.Component{
                 el={el}                
                 editToDo={()=>{this.editToDo(i)}}
                 deleteToDo={() => {this.deleteToDo(i)}} 
-                toDoDone={()=>{this.toDoDone(i)}}
-            />
+                toDoDone={()=>{this.toDoDone(i)}}/>
         });
 
-        return <div className="container" style={{ backgroundImage: `url(${image})` }}>
+        const imgStyle = { width: '50%' };
+
+        return <div className="container" >
+            <div className="row">
+                <div className="col">
            <Header 
                 newToDo={this.state.newToDo}
                 handleChange={this.handleChange}
                 editing={this.state.editing}
                 update={this.updateToDo}
-                add={this.addToDo}                
-            />
-            {
-                this.state.loading &&
-                <img src={Loading} alt="Loading gif" style={{width:'50%'}} />
-            }
-            {
-                this.state.notification &&
-                <div className="alert alert-success">
-                    {this.state.notification}
-                </div>
-            }             
-            {
-               ( !this.state.editing || this.state.loading) && 
-                <div className="mt-5">              
-                <ul className="list-group">
-                    {list}
-                </ul>           
-                <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
-                Remove all
-                </button>  
-                    {/* <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
-                 All  done
-                </button>    */}   
-                    <button className="btn btn-warning m-4 btn-sm" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
-                Remove done
-                </button> 
+                add={this.addToDo}/>
+                 </div>
             </div>
-            }
+            <div className="row">
+                <div className="col">
+                    {
+                        this.state.loading &&
+                        <img src={Loading} alt="Loading gif" style={imgStyle} />
+                    }
+                    {
+                        this.state.notification &&
+                        <div className="alert alert-success">
+                            {this.state.notification}
+                        </div>
+                    }             
+                    {
+                        ( !this.state.editing || this.state.loading) && 
+                        <div className="mt-5">              
+                        <ul className="list-group">
+                            {list}
+                        </ul>           
+                        <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
+                        Remove all
+                        </button>  
+                            {/* <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
+                            All  done
+                        </button>    */}   
+                            <button className="btn btn-warning m-4 btn-sm" onClick={this.removeAllDone} disabled={this.state.toDo.length > 0 ? false : true}>
+                        Remove done
+                        </button> 
+                    </div>
+                    }
+                </div>
+            </div>
         </div>
     }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     ReactDOM.render(
-        <ToDoApp />,
+        <ToDoApp/>,
         document.getElementById('app')
     );
 });
