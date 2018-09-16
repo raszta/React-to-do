@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import ListItem from './components/listItem.jsx';
 import Header from './components/header.jsx';
 import Loading from './images/loading.gif';
-import image from './images/wood.jpeg';
+require ('./main.scss');
 
 class ToDoApp extends React.Component{
     constructor(props){
@@ -163,7 +163,7 @@ class ToDoApp extends React.Component{
 
         const imgStyle = { width: '50%' };
 
-        return <div className="container" >
+        return <div className="container">
             <div className="row">
                 <div className="col">
            <Header 
@@ -189,7 +189,7 @@ class ToDoApp extends React.Component{
                     {
                         ( !this.state.editing || this.state.loading) && 
                         <div className="mt-5">              
-                        <ul className="list-group">
+                            <ul className="list-group">
                             {list}
                         </ul>           
                         <button className="btn btn-info m-4 btn-sm" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>

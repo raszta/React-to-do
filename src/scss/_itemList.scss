@@ -1,0 +1,33 @@
+.list__text{
+    text-align:right;
+    font-size: 0.8rem;
+    font-weight: 700;
+
+    @media screen and (min-width:600px){
+        font-size: 0.85rem;
+    }
+    @media screen and (min-width:768px){
+        font-size: 1rem;
+    }
+    @media screen and (min-width:1024px){
+        font-size: 1.8rem;
+    }
+}
+
+.btn__list{
+    font-size: 0.6rem;
+    margin:0;
+    padding:0.2rem;
+  
+    @media screen and (min-width:450px){
+        font-size: 0.7rem;
+        padding:0.3rem;
+    }
+    @media screen and (min-width:768px){
+        font-size: 0.8rem;
+        padding:0.4rem;
+    }
+    @media screen and (min-width:1024px){
+        font-size: 1.3rem;
+    }
+}

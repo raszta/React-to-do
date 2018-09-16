@@ -1,0 +1,42 @@
+.header{
+    height:40vh;   
+    background: url('images/toDo.jpg') center/cover no-repeat;
+    position: relative;
+    text-transform: capitalize;
+
+   &__title{
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    font-size:2rem;
+    text-shadow: 10px 10px 10px  black;
+
+    @media screen and(min-width:600px){
+        font-size: 3.5rem;       
+        left: 15%;
+    }
+    @media screen and(min-width:800px){
+        font-size: 5rem;
+        top: 15%;
+        left: 25%;
+    }
+    }
+
+    &__group{
+    position: absolute;
+    top: 74%;  
+    @media screen and(min-width:360px){
+        top: 80%;  
+    }    
+    @media screen and(min-width:600px){
+        top: 88%;  
+    }
+    @media screen and(min-width:800px){
+         top: 86%;  
+    } 
+    }
+    &__input{
+    opacity: 0.7;    
+    }
+}
+
