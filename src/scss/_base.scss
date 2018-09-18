@@ -5,7 +5,8 @@
 }
 
 body{
-    background: linear-gradient(rgba(234,212,212,0.5),rgba(245, 245, 245, 0.5) ,rgba(245, 239, 239, 0.5)), url('images/wood.jpeg');    
+    background: linear-gradient(to right,rgba(234,212,212,0.5),rgba(245, 239, 239, 0.5)), url('images/wood.jpeg');   
+    height: 100%; 
 }
 
 .app__btn{

@@ -6,7 +6,8 @@ export default class Header extends React.Component{
     }
     render(){ 
 
-        return <div className = "header" >
+        return (
+        <div className = "header" >
             <h1 className="header__title">make your own</h1>           
             <div className="input-group my-3 header__group">
                 <input type="text" className="form-control header__input" placeholder="Add new to do..." onChange={this.props.handleChange} value={this.props.newToDo}/>
@@ -15,7 +16,10 @@ export default class Header extends React.Component{
                         {this.props.editing ? "Edit to do" : "Add to do"}
                     </button>
                 </div>
+                <input className="form-control header__input--search" type="text" placeholder="Search for..." />
             </div> 
+                
         </div>
+        )
     }
 }
