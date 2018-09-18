@@ -16,7 +16,7 @@ export default class Header extends React.Component{
                         {this.props.editing ? "Edit to do" : "Add to do"}
                     </button>
                 </div>
-                <input className="form-control header__input--search" type="text" placeholder="Search for..." />
+                    <input className="form-control header__input--search" type="text" placeholder="Search for..." onChange={this.props.search} value={this.props.searchInput}/>
             </div> 
                 
         </div>

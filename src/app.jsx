@@ -15,7 +15,8 @@ class ToDoApp extends React.Component{
             editing: false, 
             editingIndex: null, 
             notificationMsg: null,        
-            loading: true        
+            loading: true,
+            search: ''        
         }    
         
         this.apiUrl = 'https://5b9b9b5d8d1635001482ccf4.mockapi.io/ToDoApp';
@@ -35,7 +36,13 @@ class ToDoApp extends React.Component{
     handleChange = (e) =>{       
         this.setState({
             newToDo: e.target.value
-        });       
+        });
+    }
+
+    handleSearch = (e) =>{
+        this.setState({
+            search: e.target.value
+        }); 
     }
 //adding new items to data
     addToDo = () =>{       
@@ -168,7 +175,11 @@ class ToDoApp extends React.Component{
     }
        
     render(){
-        const list = this.state.toDo.map((el, i) => {
+        let filteredList = this.state.toDo.filter((el)=>{
+            return el.activity.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1;
+
+        });
+        const list = filteredList.map((el, i) => {
             return <ListItem                         
                 key={el.id}
                 el={el}                
@@ -185,6 +196,8 @@ class ToDoApp extends React.Component{
                 handleChange={this.handleChange}
                 editing={this.state.editing}
                 update={this.updateToDo}
+                search={this.handleSearch}
+                searchInput = {this.state.search}
                 add={this.addToDo}/>
                  </div>
             </div>
