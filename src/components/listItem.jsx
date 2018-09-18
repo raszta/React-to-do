@@ -4,6 +4,9 @@ export default class ListItem extends React.Component{
     constructor(props) {
         super(props);
     }
+    stopPropagation = (e) => {
+        e.stopPropagation();
+    }
     render(){
         let font='';
         if (this.props.el.done ==1){
@@ -29,7 +32,7 @@ export default class ListItem extends React.Component{
                 </div>
                 <div className="col-auto">
                     <button className="btn btn-dark  btn-sm btn__list" onClick={this.props.deleteToDo} disabled={this.props.el.done == 1 ? true : false}>
-                        <i className="fas fa-trash-alt"></i>
+                        <i className="fas fa-trash-alt" onClick={this.props.el.done == 1 ?this.stopPropagation : null}></i>
                     </button>
                 </div>
             </div>

@@ -30,6 +30,7 @@ class ToDoApp extends React.Component{
                 });         
          });               
     }
+    
 //set value from input to string which will be added to data
     handleChange = (e) =>{       
         this.setState({
@@ -37,18 +38,21 @@ class ToDoApp extends React.Component{
         });       
     }
 //adding new items to data
-    addToDo = (e) =>{
-        axios.post(`${this.apiUrl}`, { activity: this.state.newToDo}).then(response => {
+    addToDo = () =>{       
+            axios.post(`${this.apiUrl}`, { activity: this.state.newToDo}).then(response => {
             const activity = response.data;
             this.setState({
                 toDo: [...this.state.toDo, activity],
                 newToDo: ''
             });
         }); 
-        this.msg("Activity successfully added");      
+        this.msg("Activity successfully added");
+       
     }
 //deleting item of certain id from data
-    deleteToDo = (i) => {
+    deleteToDo = (i) => {        
+        const ans = confirm("Are you sure to delete this item?");
+        if(ans){ 
         const del = this.state.toDo[i];
         const toDo = this.state.toDo;
         toDo.splice(i, 1);
@@ -57,7 +61,7 @@ class ToDoApp extends React.Component{
                 toDo: toDo
             });
         }); 
-        this.msg("Activity successfully deleted");
+        this.msg("Activity successfully deleted");}
     }
 //editing choosen item
     editToDo = (i) =>{
@@ -85,6 +89,8 @@ class ToDoApp extends React.Component{
     }
 //deleting all of items from data
     removeAll = () =>{
+        const ans = confirm("Are you sure to delete all items?");
+        if (ans) { 
         let toDo = this.state.toDo;
         toDo.forEach(el => {
             axios.delete(`${this.apiUrl}/${el.id}`);
@@ -92,7 +98,8 @@ class ToDoApp extends React.Component{
         this.setState({
             toDo: []
         });
-        this.msg("All activities successfully deleted");       
+        this.msg("All activities successfully deleted"); 
+        }      
     }
 //To Do doesn't refresh properly
     // allDone = () =>{ 
@@ -113,21 +120,21 @@ class ToDoApp extends React.Component{
     //         toDo
     //     });
     // }
-//to update -> doesn't refresh the list
+
     removeAllDone = () =>{
-        let toDo = this.state.toDo;
-        let toDo1 = [];
-        toDo1 = toDo.filter(el =>el.done !==1); 
-        toDo.forEach(el => {
-            this.setState({
-                toDo: toDo1
-            });  
+        let toDo = this.state.toDo;       
+        toDo.forEach(el => {            
             if(el.done ==1)
             {
-                console.log(el.id, toDo.indexOf(el) );                
-                axios.delete(`${this.apiUrl}/${el.id}`);
-            }                                    
-        });        
+                console.log(toDo.indexOf(el.id));
+                axios.delete(`${this.apiUrl}/${el.id}`).then(response=>{
+                toDo.splice(toDo.indexOf(response.data));
+                    this.setState({
+                        toDo
+                    });     
+                });                
+            }                                                 
+        });                       
     }
 //function for alert the operation
     msg = (notification) =>{
@@ -191,7 +198,6 @@ class ToDoApp extends React.Component{
                             {list}
                         </ul>           
                         <button className="btn btn-info m-4 btn-sm app__btn" onClick={this.removeAll} disabled={this.state.toDo.length>0 ?false:true}>
-                        {/* //disable button if  data length <0*/}
                         Remove all
                         </button>  
                             {/* <button className="btn btn-warning ml-3 btn-sm" onClick={this.allDone} disabled={this.state.toDo.length > 0 ? false : true}>
